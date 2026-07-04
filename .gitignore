@@ -1,0 +1,5 @@
+# binário compilado
+/devstation
+
+# logs / temporários
+*.log
