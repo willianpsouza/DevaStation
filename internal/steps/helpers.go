@@ -1,11 +1,24 @@
 package steps
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
 	"devstation/internal/step"
 )
+
+// installDeb downloads a .deb from url and installs it with apt (which resolves
+// dependencies), non-interactively. Honors dry-run via c.Sh.
+func installDeb(c *step.Context, url string) error {
+	script := fmt.Sprintf(`set -euo pipefail
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+echo "baixando .deb…"
+curl -fsSL -o "$tmp/pkg.deb" %q
+DEBIAN_FRONTEND=noninteractive apt-get install -y "$tmp/pkg.deb"`, url)
+	return c.Sh(script)
+}
 
 // writeRoot writes a root-owned system file, creating parent dirs.
 func writeRoot(path, content string, mode os.FileMode) error {

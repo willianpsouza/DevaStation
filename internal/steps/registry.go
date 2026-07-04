@@ -13,6 +13,8 @@ func All() []step.Step {
 		Fish{},
 		Starship{},
 		Vim{},
+		VSCode{},
+		Claude{},
 		ModernCLI{},
 		Git{},
 		Tmux{},
