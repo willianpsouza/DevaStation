@@ -18,6 +18,9 @@ func (Ghostty) Title() string { return "Ghostty (terminal GPU) + config + padrã
 
 const ghosttyBin = "/usr/bin/ghostty"
 
+const ghosttyKeybindPath = "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/"
+const ghosttyKeybindSchema = "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:" + ghosttyKeybindPath
+
 func (Ghostty) Check(c *step.Context) (bool, error) {
 	if !system.HasCommand("ghostty") {
 		return false, nil
@@ -26,8 +29,16 @@ func (Ghostty) Check(c *step.Context) (bool, error) {
 		return false, nil
 	}
 	// Is Ghostty the default x-terminal-emulator?
-	out, _ := system.Output("readlink", "-f", "/etc/alternatives/x-terminal-emulator")
-	return out == ghosttyBin, nil
+	if out, _ := system.Output("readlink", "-f", "/etc/alternatives/x-terminal-emulator"); out != ghosttyBin {
+		return false, nil
+	}
+	// Ctrl+Alt+T → ghostty? (only checkable with a live session bus)
+	if _, err := os.Stat(fmt.Sprintf("/run/user/%d/bus", c.Target.UID)); err == nil {
+		if v, ok := gsettingsGet(c.Target, ghosttyKeybindSchema, "command"); !ok || !equalSetting(v, "ghostty") {
+			return false, nil
+		}
+	}
+	return true, nil
 }
 
 func (Ghostty) Apply(c *step.Context) error {
@@ -73,14 +84,24 @@ scrollback-limit = 20000000
 		c.UI.Warn("update-alternatives --set: %v", err)
 	}
 
-	// GNOME legacy default-terminal (best-effort, roda como usuário).
+	// GNOME bits, best-effort, run as the logged-in user against their bus.
 	if _, err := os.Stat(fmt.Sprintf("/run/user/%d/bus", c.Target.UID)); err == nil {
-		if _, ok := gsettingsGet(c.Target, "org.gnome.desktop.default-applications.terminal", "exec"); ok {
-			_ = c.AsUser(c.Target, dbusEnv(c.Target), "gsettings", "set",
-				"org.gnome.desktop.default-applications.terminal", "exec", "ghostty")
-			_ = c.AsUser(c.Target, dbusEnv(c.Target), "gsettings", "set",
-				"org.gnome.desktop.default-applications.terminal", "exec-arg", "-e")
+		setg := func(schema, key, val string) {
+			_ = c.AsUser(c.Target, dbusEnv(c.Target), "gsettings", "set", schema, key, val)
 		}
+		// Legacy default-terminal (some apps honor it).
+		if _, ok := gsettingsGet(c.Target, "org.gnome.desktop.default-applications.terminal", "exec"); ok {
+			setg("org.gnome.desktop.default-applications.terminal", "exec", "ghostty")
+			setg("org.gnome.desktop.default-applications.terminal", "exec-arg", "-e")
+		}
+		// Ctrl+Alt+T → Ghostty: disable the built-in binding, add an explicit one.
+		sd := "org.gnome.settings-daemon.plugins.media-keys"
+		setg(sd, "terminal", "[]")
+		setg(sd, "custom-keybindings", "['"+ghosttyKeybindPath+"']")
+		setg(ghosttyKeybindSchema, "name", "Ghostty")
+		setg(ghosttyKeybindSchema, "command", "ghostty")
+		setg(ghosttyKeybindSchema, "binding", "<Primary><Alt>t")
+		c.UI.Info("Ctrl+Alt+T mapeado para o Ghostty")
 	}
 
 	c.UI.Info("Ghostty: JetBrains Mono 16, opacidade 0.95, terminal padrão")

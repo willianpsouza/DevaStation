@@ -10,9 +10,9 @@ import (
 type ModernCLI struct{}
 
 func (ModernCLI) ID() string    { return "modern-cli" }
-func (ModernCLI) Title() string { return "CLIs modernas (rg, fd, bat, eza, fzf)" }
+func (ModernCLI) Title() string { return "CLIs modernas (rg, fd, bat, eza, fzf, htop)" }
 
-var modernPkgs = []string{"ripgrep", "fd-find", "bat", "fzf"}
+var modernPkgs = []string{"ripgrep", "fd-find", "bat", "fzf", "htop"}
 
 func (ModernCLI) Check(c *step.Context) (bool, error) {
 	for _, p := range modernPkgs {
