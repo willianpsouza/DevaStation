@@ -9,6 +9,7 @@ func All() []step.Step {
 		SystemUpdate{},
 		AptBase{},
 		Golang{},
+		NodeJS{},
 		Docker{},
 		GH{},
 		WireGuard{},
