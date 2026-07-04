@@ -106,12 +106,21 @@ sudo ./devastation --only ghostty   # só um módulo
 - **26.04 é novíssima:** repos do Docker e do Ghostty JÁ têm build pra `resolute`. O módulo docker
   tem fallback pra `noble` (24.04) caso um dia falte.
 - **Idempotência:** todo módulo tem `Check()`; rodar de novo pula o que já está feito.
+- **PATH do fish escondido atrás do `Check()`** (fix `1174f4a`): o wiring do fish
+  (`fish_add_path -g $HOME/.local/bin` no `config.fish`) mora no `Apply()` do `claude-code`.
+  Como `Check()` só olhava o binário, máquina com claude **pré-instalado** pulava `Apply()`
+  e nunca escrevia a linha — fish não resolvia `claude` (só via path absoluto `~/.local/bin/claude`).
+  Agora `Check()` exige também o marcador `claude-code path` no `config.fish`, e `Apply()` é
+  idempotente (pula a instalação se o binário existe, mas sempre garante a linha do fish).
+  **Lição geral:** todo wiring de PATH pro fish precisa entrar no `Check()`, senão fica órfão.
+  Ver memória `[[fish-path-wiring]]`.
 
 ## O que faltava / ideias (não feitas)
 - `Makefile` (`make build/install`), flag `--version`, GitHub Actions de build no push.
 - Normalizar os marcadores antigos dos dotfiles (ou só deixar reaplicar no próximo run).
 
-## Histórico git (9 commits)
+## Histórico git
 Commit inicial → módulos vscode/claude → claude-code/gh/wireguard/nettools/ssh-config →
 nodejs → **rename para DevaStation** → ghostty → ghostty tweaks (JetBrains/padrão/opacity) →
-Ctrl+Alt+T + htop → **swap**.
+Ctrl+Alt+T + htop → **swap** → HANDOFF.md → PATH do Go no fish →
+**fix PATH do fish no claude-code** (`1174f4a`, ver Pegadinhas).
