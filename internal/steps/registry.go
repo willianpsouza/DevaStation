@@ -8,6 +8,7 @@ func All() []step.Step {
 	return []step.Step{
 		SystemUpdate{},
 		AptBase{},
+		Swap{},
 		Golang{},
 		NodeJS{},
 		Docker{},
