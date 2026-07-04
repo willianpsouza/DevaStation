@@ -1,8 +1,8 @@
 package steps
 
 import (
-	"devstation/internal/step"
-	"devstation/internal/system"
+	"devastation/internal/step"
+	"devastation/internal/system"
 )
 
 // Docker installs Docker CE from Docker's official apt repository, including
@@ -49,7 +49,7 @@ codename="$(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")"
 # Bleeding-edge Ubuntu may not have a matching Docker repo yet; fall back to
 # the newest LTS Docker actually publishes for.
 if ! curl -fsSL "https://download.docker.com/linux/ubuntu/dists/$codename/Release" >/dev/null 2>&1; then
-  echo "devstation: repo Docker sem '$codename', usando 'noble' (24.04 LTS)" >&2
+  echo "devastation: repo Docker sem '$codename', usando 'noble' (24.04 LTS)" >&2
   codename="noble"
 fi
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $codename stable" \

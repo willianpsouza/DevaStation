@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"devstation/internal/step"
-	"devstation/internal/system"
+	"devastation/internal/step"
+	"devastation/internal/system"
 )
 
 // Golang installs the official Go toolchain system-wide under /usr/local/go
@@ -73,7 +73,7 @@ tar -C /usr/local -xzf "$tmp/go.tgz"`, url, goRoot)
 	}
 
 	// System-wide PATH for interactive login shells.
-	profile := "# Go toolchain (devstation)\nexport PATH=$PATH:/usr/local/go/bin\n"
+	profile := "# Go toolchain (devastation)\nexport PATH=$PATH:/usr/local/go/bin\n"
 	if !c.DryRun {
 		if err := writeRoot("/etc/profile.d/go.sh", profile, 0o644); err != nil {
 			return err

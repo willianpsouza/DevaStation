@@ -4,8 +4,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"devstation/internal/step"
-	"devstation/internal/system"
+	"devastation/internal/step"
+	"devastation/internal/system"
 )
 
 // Fish installs the fish shell. When Cfg.FishDefault is set it also makes fish

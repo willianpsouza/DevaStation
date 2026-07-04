@@ -1,8 +1,8 @@
 package steps
 
 import (
-	"devstation/internal/step"
-	"devstation/internal/system"
+	"devastation/internal/step"
+	"devastation/internal/system"
 )
 
 // ModernCLI installs modern terminal tooling: ripgrep, fd, bat, fzf and eza.

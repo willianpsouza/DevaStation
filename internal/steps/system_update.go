@@ -3,8 +3,8 @@ package steps
 import (
 	"strings"
 
-	"devstation/internal/step"
-	"devstation/internal/system"
+	"devastation/internal/step"
+	"devastation/internal/system"
 )
 
 // SystemUpdate refreshes apt metadata, upgrades all packages (including the

@@ -1,14 +1,14 @@
-// devstation transforms a fresh Ubuntu 24.04+ install into a complete Go
+// devastation transforms a fresh Ubuntu 24.04+ install into a complete Go
 // development workstation: latest kernel, Go toolchain, Docker, fish + starship,
 // vim, modern CLIs, git, tmux and GNOME tweaks (animations off).
 //
 // Usage:
 //
-//	sudo ./devstation                 # run everything
-//	sudo ./devstation --dry-run       # show what would happen, change nothing
-//	sudo ./devstation --only fish,vim # run just these modules
-//	sudo ./devstation --skip docker   # run all but docker
-//	./devstation --list               # list modules (no root needed)
+//	sudo ./devastation                 # run everything
+//	sudo ./devastation --dry-run       # show what would happen, change nothing
+//	sudo ./devastation --only fish,vim # run just these modules
+//	sudo ./devastation --skip docker   # run all but docker
+//	./devastation --list               # list modules (no root needed)
 package main
 
 import (
@@ -18,10 +18,10 @@ import (
 	"strings"
 	"syscall"
 
-	"devstation/internal/step"
-	"devstation/internal/steps"
-	"devstation/internal/system"
-	"devstation/internal/ui"
+	"devastation/internal/step"
+	"devastation/internal/steps"
+	"devastation/internal/system"
+	"devastation/internal/ui"
 )
 
 const version = "v0.1.0"

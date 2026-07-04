@@ -1,16 +1,16 @@
-# devstation
+# DevaStation
 
 Transforma uma instalação **default de Ubuntu 24.04+** numa **estação completa de
 desenvolvimento Go** com um único binário — idempotente, seguro e sem depender de
 nada além da stdlib do Go.
 
 ```
-sudo ./devstation                 # roda tudo
-sudo ./devstation --dry-run       # mostra o que faria, sem mudar nada
-sudo ./devstation --only fish,vim # roda só esses módulos
-sudo ./devstation --skip docker   # roda tudo menos o docker
-./devstation --list               # lista os módulos (não precisa root)
-./devstation --only gnome         # tweaks do desktop (roda como você, sem sudo)
+sudo ./devastation                 # roda tudo
+sudo ./devastation --dry-run       # mostra o que faria, sem mudar nada
+sudo ./devastation --only fish,vim # roda só esses módulos
+sudo ./devastation --skip docker   # roda tudo menos o docker
+./devastation --list               # lista os módulos (não precisa root)
+./devastation --only gnome         # tweaks do desktop (roda como você, sem sudo)
 ```
 
 ## O que ele faz
@@ -54,7 +54,7 @@ sudo ./devstation --skip docker   # roda tudo menos o docker
 ## Build
 
 ```
-go build -o devstation .
+go build -o devastation .
 ```
 
 ## Estrutura

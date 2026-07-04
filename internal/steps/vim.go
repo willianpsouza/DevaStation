@@ -1,8 +1,8 @@
 package steps
 
 import (
-	"devstation/internal/step"
-	"devstation/internal/system"
+	"devastation/internal/step"
+	"devastation/internal/system"
 )
 
 // Vim installs vim and drops a sensible, dependency-free vimrc tuned for Go.

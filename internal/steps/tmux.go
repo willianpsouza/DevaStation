@@ -1,8 +1,8 @@
 package steps
 
 import (
-	"devstation/internal/step"
-	"devstation/internal/system"
+	"devastation/internal/step"
+	"devastation/internal/system"
 )
 
 // Tmux installs tmux and writes a modest, comfortable config.

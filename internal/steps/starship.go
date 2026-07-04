@@ -1,8 +1,8 @@
 package steps
 
 import (
-	"devstation/internal/step"
-	"devstation/internal/system"
+	"devastation/internal/step"
+	"devastation/internal/system"
 )
 
 // Starship installs the starship prompt and wires it into both bash and fish
@@ -13,8 +13,8 @@ func (Starship) ID() string    { return "starship" }
 func (Starship) Title() string { return "starship prompt" }
 
 const (
-	starshipBashInit = "# managed-by: devstation\neval \"$(starship init bash)\"\n"
-	starshipFishInit = "# managed-by: devstation\nstarship init fish | source\n"
+	starshipBashInit = "# managed-by: devastation\neval \"$(starship init bash)\"\n"
+	starshipFishInit = "# managed-by: devastation\nstarship init fish | source\n"
 )
 
 func (Starship) Check(c *step.Context) (bool, error) {

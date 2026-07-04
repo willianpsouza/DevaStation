@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"devstation/internal/step"
+	"devastation/internal/step"
 )
 
 // installDeb downloads a .deb from url and installs it with apt (which resolves
@@ -40,7 +40,7 @@ func fileHasMarker(path, marker string) bool {
 }
 
 // managedMarker tags every file this tool generates.
-const managedMarker = "# managed-by: devstation"
+const managedMarker = "# managed-by: devastation"
 
 // appendUser appends content to a user-owned file (creating it if needed),
 // preserving prior content and restoring ownership to the target user.

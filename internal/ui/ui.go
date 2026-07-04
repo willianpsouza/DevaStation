@@ -88,7 +88,7 @@ func (u *UI) Cmd(prefix, line string) {
 func (u *UI) Banner(version string) {
 	line := strings.Repeat("─", 52)
 	fmt.Println(u.paint(cyan, line))
-	fmt.Println(u.paint(bold+cyan, "  devstation") + u.paint(dim, "  "+version))
+	fmt.Println(u.paint(bold+cyan, "  DevaStation") + u.paint(dim, "  "+version))
 	fmt.Println(u.paint(dim, "  Ubuntu → estação de desenvolvimento Go"))
 	fmt.Println(u.paint(cyan, line))
 }

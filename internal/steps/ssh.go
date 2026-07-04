@@ -3,7 +3,7 @@ package steps
 import (
 	"os"
 
-	"devstation/internal/step"
+	"devastation/internal/step"
 )
 
 // SSHConfig ensures ~/.ssh exists with correct perms and installs an aggressive

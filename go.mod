@@ -1,3 +1,3 @@
-module devstation
+module devastation
 
 go 1.26

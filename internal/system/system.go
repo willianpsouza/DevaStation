@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	"devstation/internal/ui"
+	"devastation/internal/ui"
 )
 
 // Exec runs external commands honoring dry-run and verbose modes.

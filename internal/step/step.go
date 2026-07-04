@@ -4,8 +4,8 @@ package step
 import (
 	"fmt"
 
-	"devstation/internal/system"
-	"devstation/internal/ui"
+	"devastation/internal/system"
+	"devastation/internal/ui"
 )
 
 // Config holds user-tunable knobs passed down to steps.

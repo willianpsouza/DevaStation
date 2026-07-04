@@ -3,8 +3,8 @@ package steps
 import (
 	"os"
 
-	"devstation/internal/step"
-	"devstation/internal/system"
+	"devastation/internal/step"
+	"devastation/internal/system"
 )
 
 // ClaudeCode installs the Claude Code CLI via the official native installer.
@@ -34,7 +34,7 @@ func (ClaudeCode) Apply(c *step.Context) error {
 	// The installer wires PATH for bash/zsh; make sure fish sees ~/.local/bin too.
 	fishCfg := c.Target.Home + "/.config/fish/config.fish"
 	if !fileHasMarker(fishCfg, "claude-code path") {
-		line := "# managed-by: devstation (claude-code path)\nfish_add_path -g $HOME/.local/bin\n"
+		line := "# managed-by: devastation (claude-code path)\nfish_add_path -g $HOME/.local/bin\n"
 		if err := appendUser(c, fishCfg, line); err != nil {
 			c.UI.Warn("não consegui ajustar o PATH do fish: %v", err)
 		}

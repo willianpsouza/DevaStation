@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"devstation/internal/step"
-	"devstation/internal/system"
+	"devastation/internal/step"
+	"devastation/internal/system"
 )
 
 // Gnome disables desktop animations / visual effects and applies a few
