@@ -15,6 +15,7 @@ func All() []step.Step {
 		WireGuard{},
 		Fish{},
 		Starship{},
+		Ghostty{},
 		Vim{},
 		VSCode{},
 		Claude{},
