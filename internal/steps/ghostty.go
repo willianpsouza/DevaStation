@@ -1,30 +1,38 @@
 package steps
 
 import (
+	"fmt"
+	"os"
+
 	"devastation/internal/step"
 	"devastation/internal/system"
 )
 
-// Ghostty installs the Ghostty GPU terminal (via the mkasberg PPA, which
-// publishes for current Ubuntu incl. 26.04) and writes a user config:
-// font-size 16, 20% transparency (opacity 0.8) and a generous scrollback.
+// Ghostty installs the Ghostty GPU terminal (via the mkasberg PPA), installs
+// JetBrains Mono, writes a user config (font, transparency, scrollback) and
+// makes Ghostty the system default terminal.
 type Ghostty struct{}
 
 func (Ghostty) ID() string    { return "ghostty" }
-func (Ghostty) Title() string { return "Ghostty (terminal GPU) + config" }
+func (Ghostty) Title() string { return "Ghostty (terminal GPU) + config + padrão" }
+
+const ghosttyBin = "/usr/bin/ghostty"
 
 func (Ghostty) Check(c *step.Context) (bool, error) {
 	if !system.HasCommand("ghostty") {
 		return false, nil
 	}
-	return fileHasMarker(c.Target.Home+"/.config/ghostty/config", managedMarker), nil
+	if !fileHasMarker(c.Target.Home+"/.config/ghostty/config", managedMarker) {
+		return false, nil
+	}
+	// Is Ghostty the default x-terminal-emulator?
+	out, _ := system.Output("readlink", "-f", "/etc/alternatives/x-terminal-emulator")
+	return out == ghosttyBin, nil
 }
 
 func (Ghostty) Apply(c *step.Context) error {
 	if !system.HasCommand("ghostty") {
-		repo := `set -euo pipefail
-add-apt-repository -y ppa:mkasberg/ghostty-ubuntu`
-		if err := c.Sh(repo); err != nil {
+		if err := c.Sh("set -euo pipefail\nadd-apt-repository -y ppa:mkasberg/ghostty-ubuntu"); err != nil {
 			return err
 		}
 		if err := c.RunApt("update"); err != nil {
@@ -34,23 +42,47 @@ add-apt-repository -y ppa:mkasberg/ghostty-ubuntu`
 			return err
 		}
 	}
+	// JetBrains Mono font.
+	if err := c.AptInstall("fonts-jetbrains-mono"); err != nil {
+		c.UI.Warn("não consegui instalar fonts-jetbrains-mono: %v", err)
+	}
 
-	// scrollback-limit is in BYTES (not lines). ~20MB comfortably holds well
-	// over 20.000 lines even with heavy styling.
+	// User config. scrollback-limit is in BYTES; ~20MB holds well over 20k lines.
 	cfg := managedMarker + `
 # ~/.config/ghostty/config
 
+font-family = JetBrains Mono
 font-size = 16
 
-# 20% transparente (0.8 opaco). Requer compositor com suporte (GNOME/Wayland ok).
-background-opacity = 0.8
+# 5% transparente (0.95 opaco). Requer compositor com suporte (GNOME/Wayland ok).
+background-opacity = 0.95
 
-# "20 mil linhas" de scroll — Ghostty conta em BYTES; 20MB segura isso com folga.
+# "20 mil linhas" de scroll — Ghostty conta em BYTES; 20MB segura com folga.
 scrollback-limit = 20000000
 `
 	if err := c.WriteUserFile(c.Target, c.Target.Home+"/.config/ghostty/config", cfg, 0o644); err != nil {
 		return err
 	}
-	c.UI.Info("Ghostty pronto — config: font 16, opacidade 0.8, scrollback 20MB")
+
+	// Default terminal via Debian alternatives (used por Nautilus e afins).
+	if err := c.Run("update-alternatives", "--install", "/usr/bin/x-terminal-emulator",
+		"x-terminal-emulator", ghosttyBin, "50"); err != nil {
+		c.UI.Warn("update-alternatives --install: %v", err)
+	}
+	if err := c.Run("update-alternatives", "--set", "x-terminal-emulator", ghosttyBin); err != nil {
+		c.UI.Warn("update-alternatives --set: %v", err)
+	}
+
+	// GNOME legacy default-terminal (best-effort, roda como usuário).
+	if _, err := os.Stat(fmt.Sprintf("/run/user/%d/bus", c.Target.UID)); err == nil {
+		if _, ok := gsettingsGet(c.Target, "org.gnome.desktop.default-applications.terminal", "exec"); ok {
+			_ = c.AsUser(c.Target, dbusEnv(c.Target), "gsettings", "set",
+				"org.gnome.desktop.default-applications.terminal", "exec", "ghostty")
+			_ = c.AsUser(c.Target, dbusEnv(c.Target), "gsettings", "set",
+				"org.gnome.desktop.default-applications.terminal", "exec-arg", "-e")
+		}
+	}
+
+	c.UI.Info("Ghostty: JetBrains Mono 16, opacidade 0.95, terminal padrão")
 	return nil
 }
